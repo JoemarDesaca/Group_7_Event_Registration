@@ -9,21 +9,21 @@
     <meta name="keywords" content="dashboard,admin dashboard,template dashboard,html,html dashboard,admin dashboard template,admin template,tailwind ui,admin panel,html and css,html admin template,tailwind framework,html css javascript,tailwind css dashboard,dashboard html css,admin,template admin panel,dashboard html template">
 
     <!-- Favicon -->
-    <link rel="shortcut icon" href="../assets/images/brand-logos/favicon.ico">
+    <link rel="shortcut icon" href="{{ asset('backend/assets/images/brand-logos/favicon.ico') }}">
 
     <!-- Main JS -->
-    <script src="../assets/js/main.js"></script>
+    <script src="{{ asset('backend/assets/js/main.js') }}"></script>
 
     <!-- Style Css -->
-    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="{{ asset('backend/assets/css/style.css') }}">
 
     <!-- Simplebar Css -->
-    <link rel="stylesheet" href="../assets/libs/simplebar/simplebar.min.css">
+    <link rel="stylesheet" href="{{ asset('backend/assets/libs/simplebar/simplebar.min.css') }}">
 
     <!-- Color Picker Css -->
-    <link rel="stylesheet" href="../assets/libs/@simonwep/pickr/themes/nano.min.css">
+    <link rel="stylesheet" href="{{ asset('backend/assets/libs/@simonwep/pickr/themes/nano.min.css') }}">
 <!-- Jsvector Maps -->
-<link rel="stylesheet" href="../assets/libs/jsvectormap/css/jsvectormap.min.css">
+<link rel="stylesheet" href="{{ asset('backend/assets/libs/jsvectormap/css/jsvectormap.min.css') }}">
 
 </head>
 
@@ -3015,46 +3015,46 @@
 
 
   <!-- popperjs -->
-  <script src="../assets/libs/@popperjs/core/umd/popper.min.js"></script>
+  <script src="{{ asset('backend/assets/libs/@popperjs/core/umd/popper.min.js') }}"></script>
 
   <!-- Color Picker JS -->
-  <script src="../assets/libs/@simonwep/pickr/pickr.es5.min.js"></script>
+  <script src="{{ asset('backend/assets/libs/@simonwep/pickr/pickr.es5.min.js') }}"></script>
 
   <!-- sidebar JS -->
-  <script src="../assets/js/defaultmenu.js"></script>
+  <script src="{{ asset('backend/assets/js/defaultmenu.js') }}"></script>
 
   <!-- Switch JS -->
-  <script src="../assets/js/switch.js"></script>
+  <script src="{{ asset('backend/assets/js/switch.js') }}"></script>
 
   <!-- sticky JS -->
-  <script src="../assets/js/sticky.js"></script>
+  <script src="{{ asset('backend/assets/js/sticky.js') }}"></script>
 
 
   <!-- Simplebar JS -->
-  <script src="../assets/libs/simplebar/simplebar.min.js"></script>
+  <script src="{{ asset('backend/assets/libs/simplebar/simplebar.min.js') }}"></script>
 
   <!-- Preline JS -->
-  <script src="../assets/libs/preline/preline.js"></script>
+  <script src="{{ asset('backend/assets/libs/preline/preline.js') }}"></script>
 
  <!-- Apex Charts JS -->  
- <script src="../assets/libs/apexcharts/apexcharts.min.js"></script>
+ <script src="{{ asset('backend/assets/libs/apexcharts/apexcharts.min.js') }}"></script>
     
  <!-- JSVector Maps JS -->
- <script src="../assets/libs/jsvectormap/js/jsvectormap.min.js"></script>
+ <script src="{{ asset('backend/assets/libs/jsvectormap/js/jsvectormap.min.js') }}"></script>
  
  <!-- JSVector Maps MapsJS -->
- <script src="../assets/libs/jsvectormap/maps/world-merc.js"></script>
- <script src="../assets/js/us-merc-en.js"></script>
+ <script src="{{ asset('backend/assets/libs/jsvectormap/maps/world-merc.js') }}"></script>
+ <script src="{{ asset('backend/assets/js/us-merc-en.js') }}"></script>
 
   <!-- CRM-Dashboard -->
-  <script src="../assets/js/index.js"></script>
+  <script src="{{ asset('backend/assets/js/index.js') }}"></script>
 
   
   <!-- Custom-Switcher JS -->
-  <script src="../assets/js/custom-switcher.js"></script>
+  <script src="{{ asset('backend/assets/js/custom-switcher.js') }}"></script>
 
   <!-- Custom JS -->
-  <script src="../assets/js/custom.js"></script>
+  <script src="{{ asset('backend/assets/js/custom.js') }}"></script>
 
 </body>
 
