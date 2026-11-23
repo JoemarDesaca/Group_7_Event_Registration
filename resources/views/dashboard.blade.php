@@ -9,29 +9,10 @@ Event Registration - Dashboard
         <div class="md:flex block items-center justify-between my-6 page-header-breadcrumb">
           <div>
             <h4 class="mb-0 text-defaulttextcolor font-medium">Hi, welcome back!</h4>
-            <p class="-mt-[0.2rem] mb-0 text-textmuted">Sales monitoring dashboard template.</p>
+            <p class="-mt-[0.2rem] mb-0 text-textmuted">Event Registration Dashboard</p>
           </div>
-          <div class="main-dashboard-header-right">
-            <div>
-              <label class="text-[.8125rem] text-textmuted">Customer Ratings</label>
-              <div class="main-star">
-                <i class="bi bi-star-fill  text-warning"></i>
-                <i class="bi bi-star-fill  text-warning"></i>
-                <i class="bi bi-star-fill  text-warning"></i>
-                <i class="bi bi-star-fill  text-warning"></i>
-                <i class="bi bi-star-fill  text-textmuted op-8"></i> <span class="text-defaulttextcolor text-[13px]">(14,873)</span>
-              </div>
-            </div>
-            <div>
-              <label class="text-[.8125rem] text-textmuted">Online Sales</label>
-              <h5 class="-mt-0.5 mb-0 text-defaulttextcolor font-semibold leading-[1.2]">563,275</h5>
-            </div>
-            <div>
-              <label class="text-[.8125rem] text-textmuted">Offline Sales</label>
-              <h5 class="-mt-0.5 mb-0 text-defaulttextcolor font-semibold leading-[1.2]">783,675</h5>
-            </div>
-          </div>
-        </div>
+          <div class="mt-4 md:mt-0">
+            
         <!-- End::page-header -->
 
         <!-- row -->
