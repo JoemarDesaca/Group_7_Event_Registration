@@ -1,441 +1,205 @@
-@extends('layouts.master')
+@extends('layouts.registration')
 
-@section('title')
-Event Registration - Dashboard
-@endsection
+@section('title', 'Find an event')
 
 @section('content')
-<!-- Start::page-header -->
-        <div class="md:flex block items-center justify-between my-6 page-header-breadcrumb">
-          <div>
-            <h4 class="mb-0 text-defaulttextcolor font-medium">Hi, welcome back!</h4>
-            <p class="-mt-[0.2rem] mb-0 text-textmuted">Event Registration Dashboard</p>
-          </div>
-          <div class="mt-4 md:mt-0">
-            
-        <!-- End::page-header -->
-
-        <!-- row -->
-        <div class="grid grid-cols-12 gap-x-6">
-          <div class="xl:col-span-3 lg:col-span-6 md:col-span-6 sm:col-span-12 col-span-12">
-            <div class="box overflow-hidden sales-box bg-primary-gradient !rounded-sm">
-              <div class="px-4 pt-4 pb-2">
-                <div>
-                  <h6 class="mb-3 text-[.75rem] font-medium text-fixed-white">TODAY ORDERS</h6>
+<div class="registration-shell">
+    @if ($events->isEmpty())
+        <section class="empty-events">
+            <div class="empty-icon">✦</div>
+            <p class="eyebrow">YOUR NEXT EXPERIENCE</p>
+            <h1>There are no open registrations right now.</h1>
+            <p>Check back soon. New events will appear here when organizers open registration.</p>
+            @if ($registrations->isNotEmpty())
+                <div class="past-registrations"><h2>Your registrations</h2>@foreach ($registrations as $registration)<a href="{{ route('registrations.show', $registration) }}">{{ $registration->event->title }} <span>{{ $registration->reference }}</span></a>@endforeach</div>
+            @endif
+        </section>
+    @else
+        <section class="registration-grid" data-registration-app>
+            <aside class="event-panel">
+                <div class="event-panel-glow"></div>
+                <div class="event-brand-row"><span class="brand-mark brand-mark-light">g</span><span>Gather events</span></div>
+                <div class="event-hero">
+                    @if ($selectedEvent->cover_image)
+                        <img class="event-cover" src="{{ \Illuminate\Support\Facades\Storage::disk('public')->url($selectedEvent->cover_image) }}" alt="Cover for {{ $selectedEvent->title }}">
+                    @else
+                        <div class="event-cover event-cover-placeholder" aria-hidden="true"><span>{{ mb_strtoupper(mb_substr($selectedEvent->title, 0, 1)) }}</span></div>
+                    @endif
+                    <p class="event-date-pill">{{ $selectedEvent->starts_at->format('D, M j · g:i A') }}</p>
+                    <h1>{{ $selectedEvent->title }}</h1>
+                    <p class="event-venue">⌖ <span>{{ $selectedEvent->venue }}</span></p>
+                    <p class="event-description">{{ $selectedEvent->description }}</p>
                 </div>
-                <div class="pb-0 mt-0">
-                  <div class="flex">
-                    <div>
-                      <h4 class="font-bold text-[1.25rem] text-fixed-white">$5,74.12</h4>
-                      <p class="mb-0 text-[.75rem] text-fixed-white opacity-[0.7]">Compared to last week</p>
+                <div class="summary-card" aria-live="polite">
+                    <div class="summary-heading"><h2>Order summary</h2><span class="ticket-count"><b data-ticket-count>0</b> tickets · <b data-addon-count>0</b> add-ons</span></div>
+                    <p class="summary-empty" data-summary-empty>No tickets selected yet</p>
+                    <div class="summary-lines">
+                        <div><span>Tickets</span><strong data-ticket-subtotal>0.00 {{ $selectedEvent->currency }}</strong></div>
+                        <div><span>Add-ons</span><strong data-addon-subtotal>0.00 {{ $selectedEvent->currency }}</strong></div>
+                        <div class="discount-line" hidden><span>Discount</span><strong data-discount-total>−0.00 {{ $selectedEvent->currency }}</strong></div>
                     </div>
-                    <span class="float-end my-auto ms-auto">
-                      <i class="fas fa-arrow-circle-up text-fixed-white"></i>
-                      <span class="text-fixed-white opacity-[0.7]"> +427</span>
-                    </span>
-                  </div>
+                    <div class="summary-total"><span>Total</span><strong><small>{{ $selectedEvent->currency }}</small> <span data-order-total>0.00</span></strong></div>
                 </div>
-              </div>
-              <div id="compositeline" class="!-mb-[2px]"></div>
-            </div>
-          </div>
-          <div class="xl:col-span-3 lg:col-span-6 md:col-span-6 sm:col-span-12 col-span-12">
-            <div class="box  overflow-hidden sales-card bg-danger-gradient !rounded-sm">
-              <div class="px-4 pt-4 pb-2">
-                <div>
-                  <h6 class="mb-3 text-[.75rem] font-medium text-fixed-white">TODAY EARNINGS</h6>
-                </div>
-                <div class="pb-0 mt-0">
-                  <div class="flex">
-                    <div>
-                      <h4 class="text-[1.25rem] font-bold text-fixed-white">$1,230.17</h4>
-                      <p class="mb-0  text-[.75rem] text-fixed-white opacity-[0.7]">Compared to last week</p>
-                    </div>
-                    <span class="float-end my-auto ms-auto">
-                      <i class="fas fa-arrow-circle-down text-fixed-white"></i>
-                      <span class="text-fixed-white opacity-[0.7]"> -23.09%</span>
-                    </span>
-                  </div>
-                </div>
-              </div>
-              <div id="compositeline2" class="!-mb-[2px]"></div>
-            </div>
-          </div>
-          <div class="xl:col-span-3 lg:col-span-6 md:col-span-6 sm:col-span-12 col-span-12">
-            <div class="box  overflow-hidden sales-card bg-success-gradient !rounded-sm">
-              <div class="px-4 pt-4 pb-2">
-                <div>
-                  <h6 class="mb-3 text-[.75rem] font-medium text-fixed-white">TOTAL EARNINGS</h6>
-                </div>
-                <div class="pb-0 mt-0">
-                  <div class="flex">
-                    <div>
-                      <h4 class="text-[1.25rem] font-bold text-fixed-white">$7,125.70</h4>
-                      <p class="mb-0 text-[.75rem] text-fixed-white opacity-[0.7]">Compared to last week</p>
-                    </div>
-                    <span class="float-end my-auto ms-auto">
-                      <i class="fas fa-arrow-circle-up text-fixed-white"></i>
-                      <span class="text-fixed-white opacity-[0.7]"> 52.09%</span>
-                    </span>
-                  </div>
-                </div>
-              </div>
-              <div id="compositeline3" class="!-mb-[2px]"></div>
-            </div>
-          </div>
-          <div class="xl:col-span-3 lg:col-span-6 md:col-span-6 sm:col-span-12 col-span-12">
-            <div class="box  overflow-hidden sales-card bg-warning-gradient !rounded-sm">
-              <div class="px-4 pt-4 pb-2">
-                <div>
-                  <h6 class="mb-3 text-[.75rem] font-medium text-fixed-white">PRODUCT SOLD</h6>
-                </div>
-                <div class="pb-0 mt-0">
-                  <div class="flex">
-                    <div>
-                      <h4 class="text-[1.25rem] font-bold text-fixed-white">$4,820.50</h4>
-                      <p class="mb-0 text-[.75rem] text-fixed-white opacity-[0.7]">Compared to last week</p>
-                    </div>
-                    <span class="float-end my-auto ms-auto">
-                      <i class="fas fa-arrow-circle-down text-fixed-white"></i>
-                      <span class="text-fixed-white opacity-[0.7]"> -152.3</span>
-                    </span>
-                  </div>
-                </div>
-              </div>
-              <div id="compositeline4" class="!-mb-[2px]"></div>
-            </div>
-          </div>
-        </div>
-        <!-- row closed -->
+                <p class="secure-note"><span>✓</span> Your details are kept private and secure.</p>
+            </aside>
 
-        <!-- row opened -->
-        <div class="grid grid-cols-12 gap-x-6">
-          <div class="md:col-span-12 lg:col-span-12 xl:col-span-7 col-span-12">
-            <div class="box">
-              <div class="box-header !border-b-0 !pb-0 flex justify-between">
-                <div>
-                  <h4 class="box-title mb-2">Order status</h4>
-                  <div>
-                    <p class="text-[.75rem] text-textmuted font-normal mb-0">Order Status and Tracking. Track your order from ship date to arrival. To begin, enter your order number.</p>
-                  </div>
+            <div class="checkout-panel">
+                <div class="checkout-heading">
+                    <div><p class="eyebrow">MAKE IT A DATE</p><h2>Choose your experience</h2><p>Select an event, then pick the tickets that work for you.</p></div>
                 </div>
-                <div class="hs-dropdown ti-dropdown">
-                  <a aria-label="anchor" href="javascript:void(0);"
-                    class="flex items-center justify-center w-[1.75rem] h-[1.75rem] !text-defaulttextcolor !text-[0.8rem] !pt-1 !pb-[0.1rem] !px-2 avatar-rounded border border-light shadow-none !font-[500]"
-                    data-bs-toggle="dropdown" aria-expanded="false"><i class="fe fe-more-horizontal text-[0.8rem]"></i>
-                  </a>
-                  <ul class="hs-dropdown-menu z-[106] ti-dropdown-menu hidden">
-                    <li><a class="ti-dropdown-item !py-2 !px-[0.9375rem] !text-[0.8125rem] !font-[500] block"
-                        href="javascript:void(0);">Action</a></li>
-                    <li><a class="ti-dropdown-item !py-2 !px-[0.9375rem] !text-[0.8125rem] !font-[500] block"
-                        href="javascript:void(0);">Another action</a></li>
-                    <li><a class="ti-dropdown-item !py-2 !px-[0.9375rem] !text-[0.8125rem] !font-[500] block"
-                        href="javascript:void(0);">Something else here</a></li>
-                  </ul>
-                </div>
-              </div>
-              <div class="box-body !pb-0">
-                <div class="total-revenue">
-                  <div>
-                    <h4>120,750</h4>
-                    <label><span class="bg-primary"></span>success</label>
-                  </div>
-                  <div>
-                    <h4>56,108</h4>
-                    <label><span class="bg-danger"></span>Pending</label>
-                  </div>
-                  <div>
-                    <h4>32,895</h4>
-                    <label><span class="bg-warning"></span>Failed</label>
-                  </div>
-                </div>
-                <div id="Sales-bar" class="sales-bar"></div>
-              </div>
-            </div>
-          </div>
-          <div class="lg:col-span-12 xl:col-span-5 col-span-12">
-            <div class="box p-[20px] card-dashboard-map-one">
-              <h4 class="box-title mb-1">Sales Revenue by Customers in USA</h4>
-              <p class="text-[.75rem] text-textmuted font-normal mb-4">Sales Performance of all states in the United States.</p>
-              <div id="us-map1" class="pt-2"></div>
-            </div>
-          </div>
-        </div>  
-        <!-- row closed -->
+                <label class="field-label" for="event-picker">Available events</label>
+                <select id="event-picker" class="event-picker" onchange="window.location.href='{{ route('dashboard') }}?event='+this.value">
+                    @foreach ($events as $event)
+                        <option value="{{ $event->id }}" @selected($event->id === $selectedEvent->id)>{{ $event->title }} · {{ $event->starts_at->format('M j, Y') }} · {{ $event->venue }}</option>
+                    @endforeach
+                </select>
 
-         <!-- row opened -->
-         <div class="grid grid-cols-12 gap-x-6">
-          <div class="xl:col-span-4 md:col-span-12 lg:col-span-12 col-span-12">
-              <div class="box overflow-hidden">
-                  <div class="box-header !border-b-0 !pb-1">
-                      <h4 class="box-title mb-2">Recent Customers</h4>
-                      <p class="text-[.75rem] mb-0 text-textmuted font-normal">A customer is an individual or business that purchases the goods service has evolved to include real-time</p>
-                  </div>
-                  <div class="box-body !p-0 customers mt-1">
-                      <div class="ti-list-group ti-list-group-flush">
-                          <div class="ti-list-group-item !border-t-0 !border-l-0 !border-r-0 font-medium">
-                              <div class="flex">
-                                  <img class="avatar avatar-md avatar-rounded my-auto me-4" src="../assets/images/faces/3.jpg" alt="Image description">
-                                  <div class="flex-grow">
-                                      <div class="flex items-center">
-                                          <div class="mt-0">
-                                              <h5 class="mb-1 text-[.9375rem] leading-none">Samantha Melon</h5>
-                                              <p class="mb-0 text-[.8125rem] text-textmuted">User ID: #1234 <span class="text-success ms-2 inline-block">Paid</span></p>
-                                          </div>
-                                          <div class="ms-auto w-[45%] text-[1rem] mt-2">
-                                              <div id="spark1" class="w-full rtl:rotate-180"></div>
-                                          </div>
-                                      </div>
-                                  </div>
-                              </div>
-                          </div>
-                          <div class="ti-list-group-item !border-t-0 !border-l-0 !border-r-0 font-medium">
-                              <div class="flex">
-                                  <img class="avatar avatar-md avatar-rounded my-auto me-4" src="../assets/images/faces/11.jpg" alt="Image description">
-                                  <div class="flex-grow">
-                                      <div class="flex items-center">
-                                          <div class="mt-1">
-                                              <h5 class="mb-1 text-[.9375rem] leading-none">Jimmy Changa</h5>
-                                              <p class="mb-0 text-[.8125rem] text-textmuted">User ID: #1234 <span class="text-danger ms-2 inline-block">Pending</span></p>
-                                          </div>
-                                          <div class="ms-auto w-[45%] text-[1rem] mt-2">
-                                              <div id="spark2" class="w-full rtl:rotate-180"></div>
-                                          </div>
-                                      </div>
-                                  </div>
-                              </div>
-                          </div>
-                          <div class="ti-list-group-item !border-t-0 !border-l-0 !border-r-0 font-medium">
-                              <div class="flex">
-                                  <img class="avatar avatar-md avatar-rounded my-auto me-4" src="../assets/images/faces/17.jpg" alt="Image description">
-                                  <div class="flex-grow">
-                                      <div class="flex items-center">
-                                          <div class="mt-1">
-                                              <h5 class="mb-1 text-[.9375rem] leading-none">Gabe Lackmen</h5>
-                                              <p class="mb-0 text-[.8125rem] text-textmuted">User ID: #1234 <span class="text-danger ms-2 inline-block">Pending</span></p>
-                                          </div>
-                                          <div class="ms-auto w-[45%] text-[1rem] mt-2">
-                                              <div id="spark3" class="w-full rtl:rotate-180"></div>
-                                          </div>
-                                      </div>
-                                  </div>
-                              </div>
-                          </div>
-                          <div class="ti-list-group-item !border-t-0 !border-l-0 !border-r-0 font-medium">
-                              <div class="flex">
-                                  <img class="avatar avatar-md avatar-rounded my-auto me-4" src="../assets/images/faces/15.jpg" alt="Image description">
-                                  <div class="flex-grow">
-                                      <div class="flex items-center">
-                                          <div class="mt-1">
-                                              <h5 class="mb-1 text-[.9375rem] leading-none">Manuel Labor</h5>
-                                              <p class="mb-0 text-[.8125rem] text-textmuted">User ID: #1234 <span class="text-success ms-2 inline-block">Paid</span></p>
-                                          </div>
-                                          <div class="ms-auto w-[45%] text-[1rem] mt-2">
-                                              <div id="spark4" class="w-full rtl:rotate-180"></div>
-                                          </div>
-                                      </div>
-                                  </div>
-                              </div>
-                          </div>
-                          <div class="ti-list-group-item !border-t-0 !border-l-0 !border-r-0 font-medium">
-                              <div class="flex">
-                                  <img class="avatar avatar-md avatar-rounded my-auto me-4" src="../assets/images/faces/6.jpg" alt="Image description">
-                                  <div class="flex-grow">
-                                      <div class="flex items-center">
-                                          <div class="mt-1">
-                                              <h5 class="mb-1 text-[.9375rem] leading-none">Sharon Needles</h5>
-                                              <p class="b-0 text-[.8125rem] text-textmuted mb-0">User ID: #1234 <span class="text-success ms-2 inline-block">Paid</span></p>
-                                          </div>
-                                          <div class="ms-auto w-[45%] text-[1rem] mt-2">
-                                              <div id="spark5" class="w-full rtl:rotate-180"></div>
-                                          </div>
-                                      </div>
-                                  </div>
-                              </div>
-                          </div>
-                      </div>
-                  </div>
-              </div>
-          </div>
-          <div class="xl:col-span-4 md:col-span-12 lg:col-span-6 col-span-12">
-              <div class="box">
-                  <div class="box-header !border-b-0 !pb-0">
-                      <h3 class="box-title mb-2">Sales Activity</h3>
-                      <p class="text-[.75rem] mb-0 text-textmuted font-normal">Sales activities are the tactics that salespeople use to achieve their goals and objective</p>
-                  </div>
-                  <div class="product-timeline box-body !pt-3">
-                      <ul class="timeline-1 mb-0">
-                          <li class="!mt-0"> <i class="fe fe-pie-chart bg-primary-gradient text-fixed-white product-icon"></i> <span class="font-medium mb-4 text-[.875rem]">Total Products</span> <a href="javascript:void(0);" class="float-end text-[.6875rem] text-textmuted">3 days ago</a>
-                              <p class="mb-0 text-textmuted text-[.75rem]">1.3k New Products</p>
-                          </li>
-                          <li class="!mt-0"> <i class="fe fe-shopping-cart bg-danger-gradient text-fixed-white product-icon"></i> <span class="font-medium mb-4 text-[.875rem]">Total Sales</span> <a href="javascript:void(0);" class="float-end text-[.6875rem] text-textmuted">35 mins ago</a>
-                              <p class="mb-0 text-textmuted text-[.75rem]">1k New Sales</p>
-                          </li>
-                          <li class="!mt-0"> <i class="fe fe-bar-chart bg-success-gradient text-fixed-white product-icon"></i> <span class="font-medium mb-4 text-[.875rem]">Total Revenue</span> <a href="javascript:void(0);" class="float-end text-[.6875rem] text-textmuted">50 mins ago</a>
-                              <p class="mb-0 text-textmuted text-[.75rem]">23.5K New Revenue</p>
-                          </li>
-                          <li class="!mt-0"> <i class="fe fe-box bg-warning-gradient text-fixed-white product-icon"></i> <span class="font-medium mb-4 text-[.875rem]">Total Profit</span> <a href="javascript:void(0);" class="float-end text-[.6875rem] text-textmuted">1 hour ago</a>
-                              <p class="mb-0 text-textmuted text-[.75rem]">3k New profit</p>
-                          </li>
-                          <li class="!mt-0"> <i class="fe fe-eye bg-purple-gradient text-fixed-white product-icon"></i> <span class="font-medium mb-4 text-[.875rem]">Customer Visits</span> <a href="javascript:void(0);" class="float-end text-[.6875rem] text-textmuted">1 day ago</a>
-                              <p class="mb-0 text-textmuted text-[.75rem]">15% increased</p>
-                          </li>
-                          <li class="!mt-0 !mb-0"> <i class="fe fe-edit bg-primary-gradient text-fixed-white product-icon"></i> <span class="font-medium mb-4 text-[.875rem]">Customer Reviews</span> <a href="javascript:void(0);" class="float-end text-[.6875rem] text-textmuted">1 day ago</a>
-                              <p class="mb-0 text-textmuted text-[.75rem]">1.5k reviews</p>
-                          </li>
-                      </ul>
-                  </div>
-              </div>
-          </div>
-          <div class="xl:col-span-4 md:col-span-12 lg:col-span-6 col-span-12">
-              <div class="box">
-                  <div class="box-header !border-b-0 !pb-0">
-                      <h4 class="box-title mb-2">Recent Orders</h4>
-                      <p class="text-[.75rem] mb-0 text-textmuted font-normal">An order is an investor's instructions to a broker or brokerage firm to purchase or sell</p>
-                  </div>
-                  <div class="box-body sales-info !pb-0 !pt-0 !mt-0">
-                      <div id="chart" class="h-[150px]"></div>
-                      <div class="grid grid-cols-12 gap-x-6 sales-infomation pb-0 mb-0 mx-auto w-full">
-                          <div class="md:col-span-6 col-span-12 px-2">
-                              <p class="mb-0 flex"><span class="legend bg-primary !rounded-[0.13]"></span>Delivered</p>
-                              <h3 class="mb-1 leading-none">5238</h3>
-                              <div class="flex">
-                                  <p class="text-textmuted mb-3">Last 6 months</p>
-                              </div>
-                          </div>
-                          <div class="md:col-span-6 col-span-12 px-2">
-                              <p class="mb-0 flex"><span class="legend bg-info !rounded-[0.13]"></span>Cancelled</p>
-                                  <h3 class="mb-1 leading-none">3467</h3>
-                              <div class="flex">
-                                  <p class="text-textmuted mb-3">Last 6 months</p>
-                              </div>
-                          </div>
-                      </div>
-                  </div>
-              </div>
-              <div class="box ">
-                  <div class="box-body">
-                      <div class="grid grid-cols-12 gap-x-0 sm:gap-x-6">
-                          <div class="md:col-span-6 col-span-12">
-                              <div class="flex items-center pb-0">
-                                  <p class="mb-0 text-[.875rem] leading-none">Total Sales</p>
-                              </div>
-                              <h4 class="font-bold mb-2 text-[1.5rem] !pt-2">$7,590</h4>
-                              <div class="progress progress-style progress-sm">
-                                  <div class="progress-bar bar-1 bg-primary-gradient" style="width: 80%" role="progressbar" aria-valuenow="78" aria-valuemin="0" aria-valuemax="78"></div>
-                              </div>
-                          </div>
-                          <div class="md:col-span-6 col-span-12 mt-4 md:mt-0">
-                              <div class="flex items-center pb-0">
-                                  <p class="mb-0 text-[.875rem] leading-none">Active Users</p>
-                              </div>
-                              <h4 class="font-bold mb-2 text-[1.5rem] !pt-2">$5,460</h4>
-                              <div class="progress progress-style progress-sm">
-                                  <div class="progress-bar bar-2  bg-danger-gradient" style="width: 45%" role="progressbar"  aria-valuenow="45" aria-valuemin="0" aria-valuemax="45"></div>
-                              </div>
-                          </div>
-                      </div>
-                  </div>
-              </div>
-          </div>
-         </div>
-        <!-- row close -->
+                <form id="registration-form" method="POST" action="{{ route('registrations.store') }}">
+                    @csrf
+                    <input type="hidden" name="event_id" value="{{ $selectedEvent->id }}">
+                    <input type="hidden" name="discount_code" value="" data-discount-code>
+                    <section class="form-section">
+                        <div class="section-heading"><div><span class="step-number">01</span><h3>Select tickets</h3></div><span class="section-caption">Choose at least one</span></div>
+                        @error('tickets')<p class="form-error">{{ $message }}</p>@enderror
+                        <div class="ticket-list">
+                            @forelse ($selectedEvent->ticketTypes as $ticket)
+                                @php($remaining = max(0, $ticket->capacity - $ticket->sold))
+                                @php($remaining = $remaining < $ticket->minimum_per_order ? 0 : $remaining)
+                                @php($ticketPriceParts = explode('.', (string) $ticket->price))
+                                <article class="choice-row {{ $remaining === 0 ? 'choice-sold-out' : '' }}" data-choice-row data-kind="ticket" data-unit-cents="{{ ((int) $ticketPriceParts[0] * 100) + (int) str_pad($ticketPriceParts[1] ?? '0', 2, '0') }}" data-name="{{ $ticket->name }}">
+                                    <div class="choice-copy"><h4>{{ $ticket->name }}</h4><p>{{ $ticket->description ?: 'Admission to ' . $selectedEvent->title }}</p><span class="availability">{{ $remaining ? $remaining . ' available' : 'Sold out' }}</span></div>
+                                    <div class="choice-price">{{ $ticket->price == 0 ? 'Free' : $ticket->price . ' ' . $selectedEvent->currency }}</div>
+                                    <div class="quantity-control" aria-label="Quantity for {{ $ticket->name }}">
+                                        <button type="button" data-quantity-change="-1" aria-label="Remove one {{ $ticket->name }}" @disabled($remaining === 0)>−</button>
+                                        <input aria-label="{{ $ticket->name }} quantity" name="tickets[{{ $ticket->id }}]" value="{{ old('tickets.' . $ticket->id, 0) }}" min="0" max="{{ min($remaining, $ticket->maximum_per_order) }}" data-quantity data-minimum="{{ $ticket->minimum_per_order }}" data-maximum="{{ min($remaining, $ticket->maximum_per_order) }}" @disabled($remaining === 0)>
+                                        <button type="button" data-quantity-change="1" aria-label="Add one {{ $ticket->name }}" @disabled($remaining === 0)>+</button>
+                                    </div>
+                                </article>
+                            @empty
+                                <p class="inline-empty">Tickets have not been added for this event yet.</p>
+                            @endforelse
+                        </div>
+                    </section>
 
-         <!-- row opened -->
-         <div class="grid grid-cols-12 gap-x-6">
-          <div class="md:col-span-12 lg:col-span-4 xl:col-span-4 col-span-12">
-              <div class="box top-countries-card">
-                  <div class="box-header !border-b-0 !p-0">
-                      <h4 class="box-title !mb-1">Your Top Countries</h4><span class="d-block text-textmuted font-normal text-[0.75rem] !mb-2">Sales performance revenue based by country</span>
-                  </div>
-                  <div class="ti-list-group border mt-2">
-                      <div class="ti-list-group-item leading-[1.1] !border-t-0 !px-0" id="br-t-0">
-                          <p>United States</p><span>$1,671.10</span>
-                      </div>
-                      <div class="ti-list-group-item leading-[1.1] !border-t-0 !px-0">
-                          <p>Netherlands</p><span>$1,064.75</span>
-                      </div>
-                      <div class="ti-list-group-item leading-[1.1] !border-t-0 !px-0">
-                          <p>United Kingdom</p><span>$1,055.98</span>
-                      </div>
-                      <div class="ti-list-group-item  leading-[1.1] !border-t-0 !px-0">
-                          <p>Canada</p><span>$1,045.49</span>
-                      </div>
-                      <div class="ti-list-group-item leading-[1.1] !border-t-0 !px-0">
-                          <p>India</p><span>$1,930.12</span>
-                      </div>
-                      <div class="ti-list-group-item leading-[1.1] !border-b-0 !border-t-0 !px-0 !mb-0">
-                          <p>Australia</p><span>$1,042.00</span>
-                      </div>
-                  </div>
-              </div>
-          </div>
-          <div class="md:col-span-12 lg:col-span-8 xl:col-span-8 col-span-12">
-              <div class="box !p-[20px]">
-                  <div class=" box-header !border-b-0 !p-0 flex justify-between">
-                      <h4 class="box-title mb-2">Your Most Recent Earnings</h4>
-                      <div class="hs-dropdown ti-dropdown">
-                        <a aria-label="anchor" href="javascript:void(0);"
-                          class="flex items-center justify-center w-[1.75rem] h-[1.75rem] !text-defaulttextcolor !text-[0.8rem] !py-1 !px-2 avatar-rounded border border-light shadow-none !font-[500]"
-                          data-bs-toggle="dropdown" aria-expanded="false"><i class="fe fe-more-horizontal text-[0.8rem]"></i>
-                        </a>
-                        <ul class="hs-dropdown-menu ti-dropdown-menu hidden">
-                          <li><a class="ti-dropdown-item !py-2 !px-[0.9375rem] !text-[0.8125rem] !font-[500] block"
-                              href="javascript:void(0);">Action</a></li>
-                          <li><a class="ti-dropdown-item !py-2 !px-[0.9375rem] !text-[0.8125rem] !font-[500] block"
-                              href="javascript:void(0);">Another action</a></li>
-                          <li><a class="ti-dropdown-item !py-2 !px-[0.9375rem] !text-[0.8125rem] !font-[500] block"
-                              href="javascript:void(0);">Something else here</a></li>
-                        </ul>
-                      </div>
-                  </div>
-                  <span class="text-[0.75rem] text-textmuted mb-3 ">This is your most recent earnings for today's date.</span>
-                  <div class="table-responsive country-table">
-                      <table class="table table-auto ti-custom-table table-striped table-bordered mb-0 text-nowrap w-full !border-defaultborder dark:!border-defaultborder/10">
-                          <thead>
-                              <tr>
-                                  <th class="wd-lg-25p text-start !text-xs">Date</th>
-                                  <th class="wd-lg-25p text-start !text-xs">Sales Count</th>
-                                  <th class="wd-lg-25p text-start !text-xs">Earnings</th>
-                                  <th class="wd-lg-25p text-start !text-xs">Tax Witheld</th>
-                              </tr>
-                          </thead>
-                          <tbody>
-                              <tr>
-                                  <td class="!font-normal">05 Jan 2024</td>
-                                  <td class="font-medium">34</td>
-                                  <td class="font-medium">$658.20</td>
-                                  <td class="text-danger font-medium">-$45.10</td>
-                              </tr>
-                              <tr>
-                                  <td class="!font-normal">06 Feb 2024</td>
-                                  <td class="font-medium">26</td>
-                                  <td class="font-medium">$453.25</td>
-                                  <td class="text-danger font-medium">-$15.02</td>
-                              </tr>
-                              <tr>
-                                  <td class="!font-normal">07 Mar 2024</td>
-                                  <td class="font-medium">34</td>
-                                  <td class="font-medium">$653.12</td>
-                                  <td class="text-danger font-medium">-$13.45</td>
-                              </tr>
-                              <tr>
-                                  <td class="!font-normal">08 Apr 2024</td>
-                                  <td class="font-medium">45</td>
-                                  <td class="font-medium">$546.47</td>
-                                  <td class="text-danger font-medium">-$24.22</td>
-                              </tr>
-                              <tr>
-                                  <td class="!font-normal">09 May 2024</td>
-                                  <td class="font-medium">31</td>
-                                  <td class="font-medium">$425.72</td>
-                                  <td class="text-danger font-medium">-$25.01</td>
-                              </tr>
-                          </tbody>
-                      </table>
-                  </div>
-              </div>
-          </div>
-         </div>
-      <!-- /row -->
+                    @if ($selectedEvent->addOns->isNotEmpty())
+                        <section class="form-section add-on-section">
+                            <div class="section-heading"><div><span class="step-number">02</span><h3>Make it extra special</h3></div><span class="section-caption">Optional add-ons</span></div>
+                            <div class="ticket-list">
+                                @foreach ($selectedEvent->addOns as $addOn)
+                                    @php($remaining = $addOn->capacity === null ? 10 : max(0, $addOn->capacity - $addOn->sold))
+                                    @php($addOnPriceParts = explode('.', (string) $addOn->price))
+                                    <article class="choice-row {{ $remaining === 0 ? 'choice-sold-out' : '' }}" data-choice-row data-kind="addon" data-unit-cents="{{ ((int) $addOnPriceParts[0] * 100) + (int) str_pad($addOnPriceParts[1] ?? '0', 2, '0') }}" data-name="{{ $addOn->name }}">
+                                        <div class="choice-copy"><h4>{{ $addOn->name }}</h4><p>{{ $addOn->description ?: 'Optional event add-on' }}</p><span class="availability">{{ $remaining ? ($addOn->capacity === null ? 'Available' : $remaining . ' available') : 'Sold out' }}</span></div>
+                                        <div class="choice-price">{{ $addOn->price == 0 ? 'Free' : $addOn->price . ' ' . $selectedEvent->currency }}</div>
+                                        <div class="quantity-control" aria-label="Quantity for {{ $addOn->name }}"><button type="button" data-quantity-change="-1" @disabled($remaining === 0)>−</button><input aria-label="{{ $addOn->name }} quantity" name="add_ons[{{ $addOn->id }}]" value="{{ old('add_ons.' . $addOn->id, 0) }}" min="0" max="{{ min($remaining, 10) }}" data-quantity @disabled($remaining === 0)><button type="button" data-quantity-change="1" @disabled($remaining === 0)>+</button></div>
+                                    </article>
+                                @endforeach
+                            </div>
+                        </section>
+                    @endif
+
+                    <section class="form-section discount-section">
+                        <details>
+                            <summary><span>＋</span> Have a discount code?</summary>
+                            <div class="discount-entry"><input type="text" maxlength="64" placeholder="Enter code" aria-label="Discount code" value="{{ old('discount_code') }}" data-discount-input><button type="button" class="button button-quiet" data-apply-discount>Apply code</button></div>
+                            <p class="discount-feedback" role="status" data-discount-feedback></p>
+                        </details>
+                    </section>
+
+                    <section class="form-section attendee-section">
+                        <div class="section-heading"><div><span class="step-number">03</span><h3>Attendee details</h3></div><span class="section-caption">Confirmation goes here</span></div>
+                        <div class="attendee-fields">
+                            <label class="field-label">Full name<input name="attendee_name" value="{{ old('attendee_name', auth()->user()->name) }}" required maxlength="255" autocomplete="name">@error('attendee_name')<span class="form-error">{{ $message }}</span>@enderror</label>
+                            <label class="field-label">Email address<input type="email" name="attendee_email" value="{{ old('attendee_email', auth()->user()->email) }}" required maxlength="255" autocomplete="email">@error('attendee_email')<span class="form-error">{{ $message }}</span>@enderror</label>
+                        </div>
+                        @error('event_id')<p class="form-error">{{ $message }}</p>@enderror
+                        @error('discount_code')<p class="form-error">{{ $message }}</p>@enderror
+                        <button class="button button-primary register-button" type="submit">Complete registration <span aria-hidden="true">→</span></button>
+                        <p class="payment-note">Paid registrations will be saved as pending payment until a payment option is connected.</p>
+                    </section>
+                </form>
+                @if ($registrations->isNotEmpty())
+                    <section class="recent-orders"><p class="eyebrow">YOUR ACTIVITY</p><h3>Recent registrations</h3>@foreach ($registrations as $registration)<a href="{{ route('registrations.show', $registration) }}"><span>{{ $registration->event->title }}</span><strong>{{ $registration->status === 'pending_payment' ? 'Payment pending' : $registration->reference }}</strong></a>@endforeach</section>
+                @endif
+            </div>
+        </section>
+    @endif
+</div>
+
+@if ($events->isNotEmpty())
+<script>
+(() => {
+    const form = document.querySelector('#registration-form');
+    const currency = @json($selectedEvent->currency);
+    const cents = (value) => { const [whole, fraction = ''] = String(value).split('.'); return Number(whole) * 100 + Number((fraction + '00').slice(0, 2)); };
+    const money = (value) => `${Math.floor(value / 100)}.${String(value % 100).padStart(2, '0')}`;
+    const elements = {
+        ticketCount: document.querySelector('[data-ticket-count]'), addonCount: document.querySelector('[data-addon-count]'), ticketSubtotal: document.querySelector('[data-ticket-subtotal]'),
+        addonSubtotal: document.querySelector('[data-addon-subtotal]'), total: document.querySelector('[data-order-total]'),
+        discountLine: document.querySelector('.discount-line'), discountTotal: document.querySelector('[data-discount-total]'),
+        empty: document.querySelector('[data-summary-empty]'),
+    };
+    let appliedDiscount = 0;
+    const updateSummary = () => {
+        let tickets = 0; let addons = 0; let ticketTotal = 0; let addonTotal = 0;
+        form.querySelectorAll('[data-choice-row]').forEach((row) => {
+            const input = row.querySelector('[data-quantity]');
+            const quantity = Math.max(0, Math.min(Number(input.max), Number(input.value) || 0));
+            input.value = String(quantity);
+            const line = quantity * Number(row.dataset.unitCents);
+            if (row.dataset.kind === 'ticket') { tickets += quantity; ticketTotal += line; } else { addons += quantity; addonTotal += line; }
+        });
+        elements.ticketCount.textContent = String(tickets);
+        elements.addonCount.textContent = String(addons);
+        elements.ticketSubtotal.textContent = `${money(ticketTotal)} ${currency}`;
+        elements.addonSubtotal.textContent = `${money(addonTotal)} ${currency}`;
+        elements.empty.hidden = tickets > 0;
+        elements.discountLine.hidden = appliedDiscount <= 0;
+        elements.discountTotal.textContent = `−${money(appliedDiscount)} ${currency}`;
+        elements.total.textContent = money(Math.max(0, ticketTotal + addonTotal - appliedDiscount));
+        form.dataset.selectedTickets = String(tickets);
+    };
+
+    form.addEventListener('click', (event) => {
+        const button = event.target.closest('[data-quantity-change]');
+        if (!button) return;
+        const row = button.closest('[data-choice-row]');
+        const input = row.querySelector('[data-quantity]');
+        const next = Math.max(0, Math.min(Number(input.max), Number(input.value) + Number(button.dataset.quantityChange)));
+        if (row.dataset.kind === 'ticket' && next > 0) input.value = String(Math.max(next, Number(input.dataset.minimum)));
+        else input.value = String(next);
+        appliedDiscount = 0;
+        form.querySelector('[data-discount-code]').value = '';
+        updateSummary();
+    });
+    form.addEventListener('input', (event) => {
+        if (event.target.matches('[data-quantity]')) { appliedDiscount = 0; form.querySelector('[data-discount-code]').value = ''; updateSummary(); }
+    });
+    document.querySelector('[data-apply-discount]').addEventListener('click', async (event) => {
+        const button = event.currentTarget;
+        const feedback = document.querySelector('[data-discount-feedback]');
+        const code = document.querySelector('[data-discount-input]').value.trim();
+        if (!code) { feedback.textContent = 'Enter a code to apply it.'; return; }
+        button.disabled = true; feedback.textContent = 'Checking code…';
+        const body = new FormData(form); body.set('discount_code', code);
+        try {
+            const response = await fetch(@json(route('registrations.discount-preview')), {
+                method: 'POST', headers: {'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content, 'Accept': 'application/json'}, body,
+            });
+            const result = await response.json();
+            if (!response.ok) throw new Error(result.errors?.discount_code?.[0] || 'This code cannot be applied to the current order.');
+            appliedDiscount = cents(result.discount_amount);
+            form.querySelector('[data-discount-code]').value = code;
+            feedback.textContent = `Code applied. You save ${result.discount_amount} ${result.currency}.`;
+            updateSummary();
+        } catch (error) { appliedDiscount = 0; form.querySelector('[data-discount-code]').value = ''; feedback.textContent = error.message; updateSummary(); }
+        finally { button.disabled = false; }
+    });
+    form.addEventListener('submit', (event) => {
+        if (Number(form.dataset.selectedTickets) < 1) { event.preventDefault(); document.querySelector('.ticket-list').scrollIntoView({behavior: 'smooth', block: 'center'}); }
+    });
+    updateSummary();
+})();
+</script>
+@endif
 @endsection
