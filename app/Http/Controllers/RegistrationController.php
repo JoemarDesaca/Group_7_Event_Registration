@@ -15,12 +15,22 @@ class RegistrationController extends Controller
 {
     public function index(Request $request): View|RedirectResponse
     {
-        if ($request->user()->isOrganizer()) {
-            return redirect()->route('organizer.events.index');
+        if ($request->user()->isAdmin()) {
+            return redirect()->route('admin.dashboard');
         }
+
+        $registrations = $request->user()->registrations()->with('event')->latest()->take(5)->get();
+
+        return view('attendee.dashboard', compact('registrations'));
+    }
+
+    public function events(Request $request): View
+    {
+        abort_if($request->user()->isAdmin(), 403);
 
         $events = Event::query()
             ->where('status', 'published')
+            ->where('starts_at', '>', now())
             ->whereHas('ticketTypes', fn ($query) => $query->where('is_active', true)->whereRaw('(capacity - sold) >= minimum_per_order'))
             ->where(fn ($query) => $query->whereNull('registration_opens_at')->orWhere('registration_opens_at', '<=', now()))
             ->where(fn ($query) => $query->where('registration_closes_at', '>', now())->orWhere(fn ($query) => $query->whereNull('registration_closes_at')->where('starts_at', '>', now())))
@@ -28,16 +38,17 @@ class RegistrationController extends Controller
             ->orderBy('starts_at')
             ->get();
         $selectedEvent = $request->query->has('event')
-            ? ($events->firstWhere('id', (int) $request->query('event')) ?? $events->first())
+            ? $events->firstWhere('id', (int) $request->query('event'))
             : $events->first();
+        abort_if($request->query->has('event') && $selectedEvent === null, 404);
         $registrations = $request->user()->registrations()->with('event')->latest()->take(5)->get();
 
-        return view('dashboard', compact('events', 'selectedEvent', 'registrations'));
+        return view('events.index', compact('events', 'selectedEvent', 'registrations'));
     }
 
     public function previewDiscount(Request $request, RegistrationService $service): JsonResponse
     {
-        abort_if($request->user()->isOrganizer(), 403);
+        abort_if($request->user()->isAdmin(), 403);
         $data = $request->validate([
             'event_id' => ['required', 'integer', 'exists:events,id'],
             'tickets' => ['nullable', 'array'], 'tickets.*' => ['integer', 'min:0', 'max:10'],

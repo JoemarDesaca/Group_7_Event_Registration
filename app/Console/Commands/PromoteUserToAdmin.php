@@ -7,9 +7,9 @@ use Illuminate\Console\Attributes\Description;
 use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
 
-#[Signature('events:make-organizer {email : Email address of an existing user}')]
-#[Description('Grant event organizer access to an existing attendee account.')]
-class PromoteUserToOrganizer extends Command
+#[Signature('events:make-admin {email : Email address of an existing user}')]
+#[Description('Grant admin access to an existing attendee account.')]
+class PromoteUserToAdmin extends Command
 {
     /**
      * Execute the console command.
@@ -24,8 +24,8 @@ class PromoteUserToOrganizer extends Command
             return self::FAILURE;
         }
 
-        $user->forceFill(['role' => 'organizer'])->save();
-        $this->info("Organizer access granted to {$user->email}.");
+        $user->forceFill(['role' => 'admin'])->save();
+        $this->info("Admin access granted to {$user->email}.");
 
         return self::SUCCESS;
     }

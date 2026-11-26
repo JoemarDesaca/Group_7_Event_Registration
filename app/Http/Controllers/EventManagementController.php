@@ -13,19 +13,19 @@ use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
-class OrganizerEventController extends Controller
+class EventManagementController extends Controller
 {
     public function index(Request $request): View
     {
-        $this->authorizeOrganizer($request);
-        $events = $request->user()->events()->with(['ticketTypes', 'addOns', 'discountCodes'])->latest()->get();
+        $this->authorizeAdmin($request);
+        $events = Event::query()->with(['ticketTypes', 'addOns', 'discountCodes'])->latest()->get();
 
-        return view('organizer.events.index', compact('events'));
+        return view('admin.events.index', compact('events'));
     }
 
     public function store(Request $request): RedirectResponse
     {
-        $this->authorizeOrganizer($request);
+        $this->authorizeAdmin($request);
         $data = $request->validate([
             'title' => ['required', 'string', 'max:255'], 'description' => ['required', 'string', 'max:10000'],
             'venue' => ['required', 'string', 'max:255'], 'starts_at' => ['required', 'date'], 'ends_at' => ['nullable', 'date', 'after:starts_at'],
@@ -63,7 +63,7 @@ class OrganizerEventController extends Controller
             }
         });
 
-        return redirect()->route('organizer.events.index')->with('status', 'Event created successfully.');
+        return redirect()->route('admin.events.index')->with('status', 'Event created successfully.');
     }
 
     public function update(Request $request, Event $event): RedirectResponse
@@ -73,7 +73,7 @@ class OrganizerEventController extends Controller
             'title' => ['required', 'string', 'max:255'], 'description' => ['required', 'string', 'max:10000'],
             'venue' => ['required', 'string', 'max:255'], 'starts_at' => ['required', 'date'], 'ends_at' => ['nullable', 'date', 'after:starts_at'],
             'registration_opens_at' => ['nullable', 'date'], 'registration_closes_at' => ['nullable', 'date', 'after:registration_opens_at'],
-            'currency' => ['required', 'string', 'size:3'], 'status' => ['required', Rule::in(['draft', 'published', 'closed'])],
+            'currency' => ['required', 'string', 'size:3'], 'status' => ['required', Rule::in(['draft', 'published', 'closed', 'cancelled'])],
             'cover_image' => ['nullable', 'image', 'max:5120'],
         ]);
         $data['currency'] = Str::upper($data['currency']);
@@ -179,15 +179,14 @@ class OrganizerEventController extends Controller
         return back()->with('status', 'Discount code updated.');
     }
 
-    private function authorizeOrganizer(Request $request): void
+    private function authorizeAdmin(Request $request): void
     {
-        abort_unless($request->user()?->isOrganizer(), 403);
+        abort_unless($request->user()?->isAdmin(), 403);
     }
 
     private function authorizeEvent(Request $request, Event $event): void
     {
-        $this->authorizeOrganizer($request);
-        abort_unless($event->organizer_id === $request->user()->id, 403);
+        $this->authorizeAdmin($request);
     }
 
     private function toCents(string $amount): int

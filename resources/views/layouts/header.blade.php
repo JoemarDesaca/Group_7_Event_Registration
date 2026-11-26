@@ -7,12 +7,12 @@
             <!-- Start::header-element -->
             <div class="header-element">
               <div class="horizontal-logo">
-                <a href="index.html" class="header-logo">
-                  <img src="../assets/images/brand-logos/desktop-logo.png" alt="logo" class="desktop-logo">
-                  <img src="../assets/images/brand-logos/toggle-logo.png" alt="logo" class="toggle-logo">
-                  <img src="../assets/images/brand-logos/desktop-dark.png" alt="logo" class="desktop-dark">
-                  <img src="../assets/images/brand-logos/toggle-dark.png" alt="logo" class="toggle-dark">
-                  <img src="../assets/images/brand-logos/desktop-white.png" alt="logo" class="desktop-white">
+                <a href="{{ route('dashboard') }}" class="header-logo">
+                  <img src="{{ asset('backend/assets/images/brand-logos/desktop-logo.png')}}" alt="logo" class="desktop-logo">
+                  <img src="{{ asset('backend/assets/images/brand-logos/toggle-logo.png')}}" alt="logo" class="toggle-logo">
+                  <img src="{{ asset('backend/assets/images/brand-logos/desktop-dark.png')}}" alt="logo" class="desktop-dark">
+                  <img src="{{ asset('backend/assets/images/brand-logos/toggle-dark.png')}}" alt="logo" class="toggle-dark">
+                  <img src="{{ asset('backend/assets/images/brand-logos/desktop-white.png')}}" alt="logo" class="desktop-white">
                 </a>
               </div>
             </div>
@@ -462,8 +462,8 @@
 
               <button id="dropdown-profile" type="button"
                 class="hs-dropdown-toggle ti-dropdown-toggle !gap-2 !p-0 flex-shrink-0 me-0 !rounded-full !shadow-none text-xs align-middle !border-0 !shadow-transparent ">
-                <img class="inline-block rounded-full " src="../assets/images/faces/6.jpg" width="37" height="37"
-                  alt="Image Description">
+                <img class="inline-block rounded-full " src="{{ asset('backend/assets/images/faces/6.jpg') }}" width="37" height="37"
+                  alt="{{ auth()->user()->name }}">
               </button>
               <div
                 class="main-header-dropdown !-mt-2 !p-0 hs-dropdown-menu ti-dropdown-menu  bg-white  !border-0 border-defaultborder hidden !m-0"
@@ -474,24 +474,22 @@
                   <li>
                     <div class="main-header-profile bg-primary menu-header-content text-white">
                       <div class="my-auto">
-                        <h6 class="mb-0 leading-none text-white">Petey Cruiser</h6><span
-                          class="text-[.6875rem] opacity-[0.7] leading-none">Premium Member</span>
+                        <h6 class="mb-0 leading-none text-white">{{ auth()->user()->name }}</h6><span
+                          class="text-[.6875rem] opacity-[0.7] leading-none">{{ ucfirst(auth()->user()->isAdmin() ? 'admin' : 'attendee') }}</span>
                       </div>
                     </div>
                   </li>
-                  <li><a class="dropdown-item text-defaulttextcolor flex " href="profile.html"><i
+                  <li><a class="dropdown-item text-defaulttextcolor flex " href="{{ route('profile.edit') }}"><i
                         class="bx bx-user-circle text-[1.125rem] me-2 opacity-[0.7]"></i>Profile</a></li>
-                  <li><a class="dropdown-item text-defaulttextcolor flex " href="profile.html"><i
+                  <li><a class="dropdown-item text-defaulttextcolor flex " href="{{ route('profile.edit') }}"><i
                         class="bx bx-cog text-[1.125rem] me-2 opacity-[0.7]"></i>Edit Profile </a></li>
                   <li><a class="dropdown-item text-defaulttextcolor flex  border-block-end" href="mail.html"><i
                         class="bx bxs-inbox text-[1.125rem] me-2 opacity-[0.7]"></i>Inbox</a></li>
                   <li><a class="dropdown-item text-defaulttextcolor flex " href="chat.html"><i
                         class="bx bx-envelope text-[1.125rem] me-2 opacity-[0.7]"></i>Messages</a></li>
-                  <li><a class="dropdown-item text-defaulttextcolor flex  border-block-end" href="profile.html"><i
+                  <li><a class="dropdown-item text-defaulttextcolor flex  border-block-end" href="{{ route('profile.edit') }}"><i
                         class="bx bx-slider-alt text-[1.125rem] me-2 opacity-[0.7]"></i>Account Settings</a></li>
-                  <li><a class="dropdown-item text-defaulttextcolor !rounded-bl-md !rounded-br-md flex "
-                      href="sign-in-basic.html"><i class="bx bx-log-out text-[1.125rem] me-2 opacity-[0.7]"></i>Sign Out</a>
-                  </li>
+                  <li><form method="POST" action="{{ route('logout') }}">@csrf<button class="dropdown-item text-defaulttextcolor !rounded-bl-md !rounded-br-md flex w-full" type="submit"><i class="bx bx-log-out text-[1.125rem] me-2 opacity-[0.7]"></i>Sign Out</button></form></li>
                 </ul>
               </div>
             </div>

@@ -1,4 +1,4 @@
-@extends('layouts.registration')
+@extends('layouts.master')
 
 @section('title', 'Registration confirmation')
 
@@ -18,7 +18,7 @@
         <div class="confirmation-total"><span>Total</span><span>{{ $registration->total }} {{ $registration->event->currency }}</span></div>
         @if ($registration->discount_amount !== '0.00')<p>Discount {{ $registration->discountCode?->code ? '('.$registration->discountCode->code.')' : '' }} applied: {{ $registration->discount_amount }} {{ $registration->event->currency }}</p>@endif
         <span class="confirmation-status {{ $registration->status }}">{{ str_replace('_', ' ', $registration->status) }}</span>
-        <div class="confirmation-actions"><a class="button button-primary" href="{{ route('dashboard') }}">Explore more events</a></div>
+        <div class="confirmation-actions"><a class="button button-primary" href="{{ route('events.index') }}">Explore more events</a></div>
     </section>
 </div>
 @endsection

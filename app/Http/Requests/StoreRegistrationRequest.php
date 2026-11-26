@@ -12,7 +12,7 @@ class StoreRegistrationRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->user() !== null && ! $this->user()->isOrganizer();
+        return $this->user() !== null && ! $this->user()->isAdmin();
     }
 
     /**

@@ -46,6 +46,7 @@ class Event extends Model
     public function isAcceptingRegistrations(): bool
     {
         return $this->status === 'published'
+            && $this->starts_at->isFuture()
             && (! $this->registration_opens_at || $this->registration_opens_at->isPast())
             && ($this->registration_closes_at ? $this->registration_closes_at->isFuture() : $this->starts_at->isFuture());
     }

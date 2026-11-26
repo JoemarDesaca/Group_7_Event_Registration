@@ -28,14 +28,14 @@ it('shows only published events that are accepting registrations', function () {
     openEvent(['title' => 'Closed Gathering', 'registration_closes_at' => now()->subMinute()]);
     openEvent(['title' => 'Past Gathering', 'starts_at' => now()->subDay(), 'registration_closes_at' => null]);
 
-    $this->get(route('dashboard'))
+    $this->get(route('events.index'))
         ->assertOk()
         ->assertSee('Open Forum')
         ->assertDontSee('Draft Gathering')
         ->assertDontSee('Closed Gathering')
         ->assertDontSee('Past Gathering')
         ->assertSee((string) $openEvent->id);
-    $this->get(route('dashboard', ['event' => 999999]))->assertNotFound();
+    $this->get(route('events.index', ['event' => 999999]))->assertNotFound();
 });
 
 it('stores multiple ticket types, add-ons, exact totals and individual pending tickets', function () {
@@ -69,25 +69,25 @@ it('rejects sold-out and inactive ticket selections without changing inventory',
     $soldOut = TicketType::factory()->create(['event_id' => $event->id, 'capacity' => 1, 'sold' => 1]);
     $inactive = TicketType::factory()->create(['event_id' => $event->id, 'is_active' => false]);
 
-    $this->from(route('dashboard'))->post(route('registrations.store'), [
+    $this->from(route('events.index'))->post(route('registrations.store'), [
         'event_id' => $event->id, 'attendee_name' => 'Alex Attendee', 'attendee_email' => 'alex@example.test',
         'tickets' => [$soldOut->id => 1],
     ])->assertSessionHasErrors('tickets');
 
-    $this->from(route('dashboard'))->post(route('registrations.store'), [
+    $this->from(route('events.index'))->post(route('registrations.store'), [
         'event_id' => $event->id, 'attendee_name' => 'Alex Attendee', 'attendee_email' => 'alex@example.test',
         'tickets' => [$inactive->id => 1],
     ])->assertSessionHasErrors('tickets');
 
     $otherEvent = openEvent();
     $otherEventTicket = TicketType::factory()->create(['event_id' => $otherEvent->id]);
-    $this->from(route('dashboard'))->post(route('registrations.store'), [
+    $this->from(route('events.index'))->post(route('registrations.store'), [
         'event_id' => $event->id, 'attendee_name' => 'Alex Attendee', 'attendee_email' => 'alex@example.test',
         'tickets' => [$otherEventTicket->id => 1],
     ])->assertSessionHasErrors('tickets');
 
     $available = TicketType::factory()->create(['event_id' => $event->id, 'capacity' => 20, 'maximum_per_order' => 3]);
-    $this->from(route('dashboard'))->post(route('registrations.store'), [
+    $this->from(route('events.index'))->post(route('registrations.store'), [
         'event_id' => $event->id, 'attendee_name' => 'Alex Attendee', 'attendee_email' => 'alex@example.test',
         'tickets' => [$available->id => 4],
     ])->assertSessionHasErrors('tickets');
@@ -112,7 +112,7 @@ it('applies and records a discount under its redemption limit', function () {
         'event_id' => $event->id, 'tickets' => [$ticket->id => 1], 'discount_code' => 'SAVE10',
     ])->assertOk()->assertJson(['discount_amount' => '20.00', 'total' => '180.00', 'currency' => $event->currency]);
 
-    $this->from(route('dashboard'))->post(route('registrations.store'), [
+    $this->from(route('events.index'))->post(route('registrations.store'), [
         'event_id' => $event->id, 'attendee_name' => 'Alex Attendee', 'attendee_email' => 'alex@example.test',
         'tickets' => [$ticket->id => 1], 'discount_code' => 'PAST',
     ])->assertSessionHasErrors('discount_code');
@@ -128,7 +128,7 @@ it('applies and records a discount under its redemption limit', function () {
         ->and($code->fresh()->redemption_count)->toBe(1)
         ->and(DB::table('discount_redemptions')->where('registration_id', $registration->id)->exists())->toBeTrue();
 
-    $this->from(route('dashboard'))->post(route('registrations.store'), [
+    $this->from(route('events.index'))->post(route('registrations.store'), [
         'event_id' => $event->id, 'attendee_name' => 'Another Attendee', 'attendee_email' => 'other@example.test',
         'tickets' => [$ticket->id => 1], 'discount_code' => 'SAVE10',
     ])->assertSessionHasErrors('discount_code');
@@ -141,7 +141,7 @@ it('enforces add-on inventory and confirms zero-priced registrations', function 
     $ticket = TicketType::factory()->create(['event_id' => $event->id, 'price' => '0.00', 'capacity' => 3]);
     $addOn = AddOn::factory()->create(['event_id' => $event->id, 'capacity' => 1, 'sold' => 1]);
 
-    $this->from(route('dashboard'))->post(route('registrations.store'), [
+    $this->from(route('events.index'))->post(route('registrations.store'), [
         'event_id' => $event->id, 'attendee_name' => 'Alex Attendee', 'attendee_email' => 'alex@example.test',
         'tickets' => [$ticket->id => 1], 'add_ons' => [$addOn->id => 1],
     ])->assertSessionHasErrors('add_ons');
@@ -161,28 +161,28 @@ it('rejects unavailable events, protects private registrations and gates organiz
     $event = openEvent(['registration_closes_at' => now()->subMinute()]);
     $ticket = TicketType::factory()->create(['event_id' => $event->id]);
 
-    $this->from(route('dashboard'))->post(route('registrations.store'), [
+    $this->from(route('events.index'))->post(route('registrations.store'), [
         'event_id' => $event->id, 'attendee_name' => 'Alex Attendee', 'attendee_email' => 'alex@example.test',
         'tickets' => [$ticket->id => 1],
     ])->assertSessionHasErrors('event_id');
-    $this->post(route('organizer.events.store'), [])->assertForbidden();
+    $this->post(route('admin.events.store'), [])->assertForbidden();
 
     $organizer = User::factory()->create();
-    DB::table('users')->where('id', $organizer->id)->update(['role' => 'organizer']);
+    DB::table('users')->where('id', $organizer->id)->update(['role' => 'admin']);
     $organizer->refresh();
-    $this->actingAs($organizer)->get(route('organizer.events.index'))->assertOk();
+    $this->actingAs($organizer)->get(route('admin.events.index'))->assertOk();
     $startsAt = now()->addMonth();
-    $this->post(route('organizer.events.store'), [
-        'title' => 'Organizer-created showcase', 'description' => 'A real event published from the organizer workspace.',
+    $this->post(route('admin.events.store'), [
+        'title' => 'Admin-created showcase', 'description' => 'A real event published from the admin workspace.',
         'venue' => 'Community Hall', 'starts_at' => $startsAt->format('Y-m-d H:i:s'),
         'ends_at' => $startsAt->copy()->addHours(2)->format('Y-m-d H:i:s'),
         'registration_opens_at' => now()->subDay()->format('Y-m-d H:i:s'),
         'registration_closes_at' => $startsAt->copy()->subDay()->format('Y-m-d H:i:s'), 'currency' => 'PHP', 'publish' => 1,
         'tickets' => [['name' => 'Admission', 'description' => 'Standard entry', 'price' => '0.00', 'capacity' => 20, 'minimum_per_order' => 1, 'maximum_per_order' => 5]],
-    ])->assertRedirect(route('organizer.events.index'));
-    expect(Event::query()->where('title', 'Organizer-created showcase')->where('organizer_id', $organizer->id)->exists())->toBeTrue();
-    $this->actingAs($attendee)->get(route('dashboard'))->assertOk()->assertSee('Organizer-created showcase');
-    $this->actingAs($attendee)->get(route('organizer.events.index'))->assertForbidden();
+    ])->assertRedirect(route('admin.events.index'));
+    expect(Event::query()->where('title', 'Admin-created showcase')->where('organizer_id', $organizer->id)->exists())->toBeTrue();
+    $this->actingAs($attendee)->get(route('events.index'))->assertOk()->assertSee('Admin-created showcase');
+    $this->actingAs($attendee)->get(route('admin.events.index'))->assertForbidden();
     $this->actingAs($organizer)->get(route('registrations.show', $attendee->registrations()->create([
         'event_id' => openEvent()->id, 'attendee_name' => $attendee->name, 'attendee_email' => $attendee->email,
         'reference' => 'EVT-PRIVATE-REFERENCE', 'ticket_subtotal' => '0.00', 'add_on_subtotal' => '0.00',
@@ -191,6 +191,6 @@ it('rejects unavailable events, protects private registrations and gates organiz
 });
 
 it('requires authentication for event discovery and checkout', function () {
-    $this->get(route('dashboard'))->assertRedirect(route('login'));
+    $this->get(route('events.index'))->assertRedirect(route('login'));
     $this->post(route('registrations.store'), [])->assertRedirect(route('login'));
 });
