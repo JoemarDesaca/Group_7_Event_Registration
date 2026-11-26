@@ -2,7 +2,7 @@
 
 @section('title')SIMS | Create Users @endsection
     
-@section('contents')
+@section('content')
     <!-- Start:: row-1 -->
                     <div class="grid grid-cols-12 gap-6 mt-4 text-defaultsize">
                         <div class="xl:col-span-12 col-span-12">
@@ -38,6 +38,10 @@
                                             <label for="input-label" class="form-label !mb-2">Birthdate</label>
                                             <input type="date" class="form-control " name="Birthdate">
 
+                                             <div class="xl:col-span-4 lf:col-span-6 md:col-span-6 sm:col-span-12 col-span-12">
+                                            <label for="input-label" class="form-label !mb-2">Role</label>
+                                            <input type="text" class="form-control " name="role">
+                                        </div>
                                         <div class="xl:col-span-4 lf:col-span-6 md:col-span-6 sm:col-span-12 col-span-12">
                                             <label for="input-label" class="form-label !mb-2">Password</label>
                                             <input type="password" class="form-control " name="password">

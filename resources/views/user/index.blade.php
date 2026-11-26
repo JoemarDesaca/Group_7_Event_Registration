@@ -4,7 +4,7 @@
 POS - User Management
 @endsection
 
-@section('contents')
+@section('content')
 <!-- row opened -->
 <div class="grid grid-cols-12 mt-8 gap-x-6">
   <div class="col-span-12 xxl:col-span-12">
