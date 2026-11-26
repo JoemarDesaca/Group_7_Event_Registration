@@ -7,6 +7,11 @@
 <div class="box"><div class="box-body">
     @if (session('status'))<div class="alert alert-success">{{ session('status') }}</div>@endif
     @if ($errors->any())<div class="alert alert-danger">{{ $errors->first() }}</div>@endif
+    <div class="flex gap-3 mb-4" aria-label="Attendance status filters">
+        <a class="ti-btn {{ request('attendance') === 'present' ? 'ti-btn-primary' : 'ti-btn-light' }}" href="{{ route('admin.attendance.index', array_merge(request()->except('page'), ['attendance' => 'present'])) }}">Present</a>
+        <a class="ti-btn {{ request('attendance') === 'absent' ? 'ti-btn-primary' : 'ti-btn-light' }}" href="{{ route('admin.attendance.index', array_merge(request()->except('page'), ['attendance' => 'absent'])) }}">Absent</a>
+        @if (request()->filled('attendance'))<a class="ti-btn ti-btn-light" href="{{ route('admin.attendance.index', request()->except(['attendance', 'page'])) }}">All</a>@endif
+    </div>
     <form method="GET" action="{{ route('admin.attendance.index') }}" class="flex flex-wrap gap-3 mb-4">
         <input class="form-control min-w-[240px]" type="search" name="search" value="{{ request('search') }}" placeholder="Ticket or registration reference, attendee, email">
         <select class="form-control" name="status"><option value="">All ticket statuses</option>@foreach (['valid', 'checked_in', 'pending_payment', 'cancelled'] as $status)<option value="{{ $status }}" @selected(request('status') === $status)>{{ ucfirst(str_replace('_', ' ', $status)) }}</option>@endforeach</select>
