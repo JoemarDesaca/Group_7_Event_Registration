@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr" data-nav-layout="vertical" class="light" data-header-styles="light" data-menu-styles="light">
+<html lang="en" dir="ltr" data-nav-layout="vertical" data-vertical-style="closed" data-toggled="close-menu-close" class="light" data-header-styles="light" data-menu-styles="light">
 
 <head>
     <meta charset="UTF-8">
