@@ -24,6 +24,20 @@
     <link rel="stylesheet" href="{{ asset('backend/assets/libs/@simonwep/pickr/themes/nano.min.css') }}">
 <!-- Jsvector Maps -->
 <link rel="stylesheet" href="{{ asset('backend/assets/libs/jsvectormap/css/jsvectormap.min.css') }}">
+    <style>
+      :root { --app-ink: #252238; --app-muted: #777487; --app-accent: #6844a1; --app-line: #eceaf1; }
+      body { color: var(--app-ink); font-family: 'DM Sans', Inter, system-ui, sans-serif; font-size: 14px; line-height: 1.55; }
+      .app-content main, .app-content .main-content { font-size: 14px; }
+      .page-header-breadcrumb h1, .page-header-breadcrumb h2, .page-header-breadcrumb h3, .page-header-breadcrumb h4 { color: var(--app-ink); font-weight: 650 !important; letter-spacing: -.025em; }
+      .box { border: 1px solid var(--app-line); border-radius: 14px; box-shadow: 0 5px 20px rgba(37,34,56,.045); }
+      .box-header { padding: 18px 22px; }
+      .box-body { padding: 22px; }
+      .table thead th { color: #5c586b; font-size: 12px; font-weight: 650; letter-spacing: .025em; }
+      .table tbody td { color: #514d60; font-size: 13px; vertical-align: middle; }
+      .form-control, .ti-form-input, select.form-control { min-height: 40px; border-color: #e5e2eb; border-radius: 8px; font-size: 13px; }
+      .ti-btn { border-radius: 8px; font-weight: 600; }
+      .side-menu__item { border-radius: 8px; font-size: 13px; font-weight: 550; }
+    </style>
     @if (request()->routeIs('events.*', 'registrations.*'))
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     @endif

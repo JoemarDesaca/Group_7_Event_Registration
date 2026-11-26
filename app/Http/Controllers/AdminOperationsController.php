@@ -70,6 +70,8 @@ class AdminOperationsController extends Controller
                 });
             })
             ->when($request->filled('status'), fn ($query) => $query->where('status', $request->string('status')))
+            ->when($request->input('attendance') === 'present', fn ($query) => $query->where('status', 'checked_in'))
+            ->when($request->input('attendance') === 'absent', fn ($query) => $query->where('status', 'valid'))
             ->latest()
             ->paginate(20)
             ->withQueryString();
