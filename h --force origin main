@@ -1,0 +1,21 @@
+* [33m715b7f42[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m MOdified Package-lock.json
+[31m|[m * [33mecde47a0[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m Updated changes
+[31m|[m[31m/[m  
+* [33m1d52da34[m Updated Changes
+* [33m247d4531[m[33m ([m[1;31morigin/Mangubat-works[m[33m)[m updated UI
+*   [33m912dae6a[m Merge branch 'main' of https://github.com/JoemarDesaca/Group_7_Event_Registration
+[33m|[m[34m\[m  
+[33m|[m * [33m2de3076a[m user: added roles in Create user
+[33m|[m * [33mf2c03631[m Added: UserManagement Controller and Routing on Usermanagement
+* [34m|[m   [33m7eb5ed36[m Merge branch 'main' of https://github.com/JoemarDesaca/Group_7_Event_Registration
+[34m|[m[36m\[m [34m\[m  
+[34m|[m [36m|[m[34m/[m  
+[34m|[m[34m/[m[36m|[m   
+[34m|[m * [33m651fd5c4[m User-EventRegistration
+[34m|[m * [33maa9d02e1[m Remove exposed Google Maps API key
+[34m|[m * [33md4734fc3[m added-backend
+[34m|[m[34m/[m  
+* [33mf28d10c6[m modified dashboard and master file
+* [33m4417462a[m UI: Improved Inheretance Implemented
+* [33m624f441b[m Changes:Dashboard-redirected the path to assets
+* [33m2c5f78ee[m Uploaded assets files in public/backend
