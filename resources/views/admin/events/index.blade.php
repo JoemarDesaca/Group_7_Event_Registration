@@ -29,7 +29,7 @@
 
     @forelse ($events as $event)
         <article class="managed-event">
-            <div class="event-admin-top"><div><h2>{{ $event->title }}</h2><p>{{ $event->starts_at->format('M j, Y Â· g:i A') }} Â· {{ $event->venue }}</p></div><span class="status-pill {{ $event->status }}">{{ $event->status }}</span></div>
+            <div class="event-admin-top"><div><h2>{{ $event->title }}</h2><p>{{ $event->starts_at->format('M j, Y  g:i A') }} {{ $event->venue }}</p></div><span class="status-pill {{ $event->status }}">{{ $event->status }}</span></div>
             <div class="management-details">
                 <details><summary>Edit event details / registration status</summary>
                     <form class="organizer-form" method="POST" action="{{ route('admin.events.update', $event) }}" enctype="multipart/form-data">@csrf @method('PATCH')
@@ -43,7 +43,7 @@
                     </form>
                 </details>
                 <details><summary>Ticket types ({{ $event->ticketTypes->count() }})</summary>
-                    <div><ul class="management-list">@foreach ($event->ticketTypes as $ticket)<li><span>{{ $ticket->name }} <small>Â· {{ $ticket->price }} {{ $event->currency }}</small></span><small>{{ max(0, $ticket->capacity - $ticket->sold) }} / {{ $ticket->capacity }} left</small></li>@endforeach</ul>
+                    <div><ul class="management-list">@foreach ($event->ticketTypes as $ticket)<li><span>{{ $ticket->name }} <small>{{ $ticket->price }} {{ $event->currency }}</small></span><small>{{ max(0, $ticket->capacity - $ticket->sold) }} / {{ $ticket->capacity }} left</small></li>@endforeach</ul>
                     @foreach ($event->ticketTypes as $ticket)
                         <details><summary>Edit {{ $ticket->name }}</summary><form class="organizer-form" method="POST" action="{{ route('admin.events.tickets.update', [$event, $ticket]) }}">@csrf @method('PATCH')
                             <div class="form-grid"><label>Name<input name="name" value="{{ $ticket->name }}" required maxlength="120"></label><label>Price<input name="price" type="number" min="0" step="0.01" value="{{ $ticket->price }}" required></label></div>
@@ -63,7 +63,7 @@
                     </form></div>
                 </details>
                 <details><summary>Add-ons ({{ $event->addOns->count() }})</summary>
-                    <div><ul class="management-list">@foreach ($event->addOns as $addOn)<li><span>{{ $addOn->name }} <small>Â· {{ $addOn->price }} {{ $event->currency }}</small></span><small>{{ $addOn->capacity === null ? 'Unlimited' : max(0, $addOn->capacity - $addOn->sold) . ' left' }}</small></li>@endforeach</ul>
+                    <div><ul class="management-list">@foreach ($event->addOns as $addOn)<li><span>{{ $addOn->name }} <small> {{ $addOn->price }} {{ $event->currency }}</small></span><small>{{ $addOn->capacity === null ? 'Unlimited' : max(0, $addOn->capacity - $addOn->sold) . ' left' }}</small></li>@endforeach</ul>
                     @foreach ($event->addOns as $addOn)
                         <details><summary>Edit {{ $addOn->name }}</summary><form class="organizer-form" method="POST" action="{{ route('admin.events.add-ons.update', [$event, $addOn]) }}">@csrf @method('PATCH')
                             <div class="form-grid"><label>Name<input name="name" value="{{ $addOn->name }}" required maxlength="120"></label><label>Price<input name="price" type="number" min="0" step="0.01" value="{{ $addOn->price }}" required></label></div>
@@ -81,7 +81,7 @@
                 <details><summary>Discount codes ({{ $event->discountCodes->count() }})</summary>
                     <ul class="management-list">
                         @foreach ($event->discountCodes as $discountCode)
-                            <li><span><strong>{{ $discountCode->code }}</strong> <small>Â· {{ $discountCode->type === 'percentage' ? $discountCode->amount . '%' : $discountCode->amount . ' ' . $event->currency }}</small></span><small>{{ $discountCode->redemption_count }}{{ $discountCode->maximum_redemptions ? ' / ' . $discountCode->maximum_redemptions : '' }} used Â· {{ $discountCode->is_active ? 'active' : 'inactive' }}</small></li>
+                            <li><span><strong>{{ $discountCode->code }}</strong> <small>{{ $discountCode->type === 'percentage' ? $discountCode->amount . '%' : $discountCode->amount . ' ' . $event->currency }}</small></span><small>{{ $discountCode->redemption_count }}{{ $discountCode->maximum_redemptions ? ' / ' . $discountCode->maximum_redemptions : '' }} used {{ $discountCode->is_active ? 'active' : 'inactive' }}</small></li>
                             <li><form method="POST" action="{{ route('admin.events.discounts.update', [$event, $discountCode]) }}">@csrf @method('PATCH')<input type="hidden" name="is_active" value="{{ $discountCode->is_active ? 0 : 1 }}"><button class="button button-quiet" type="submit">{{ $discountCode->is_active ? 'Deactivate' : 'Reactivate' }} {{ $discountCode->code }}</button></form></li>
                         @endforeach
                     </ul>
@@ -95,7 +95,7 @@
             </div>
         </article>
     @empty
-        <div class="empty-events"><div class="empty-icon">âœ¦</div><h1>Bring people together.</h1><p>Create your first event and set up its tickets. It will appear in attendee discovery when published and registration is open.</p></div>
+        <div class="empty-events"><div class="empty-icon"></div><h1>Bring people together.</h1><p>Create your first event and set up its tickets. It will appear in attendee discovery when published and registration is open.</p></div>
     @endforelse
 
     <section class="organizer-card" id="create-event">

@@ -6,7 +6,7 @@
 <div class="registration-shell">
     @if ($events->isEmpty())
         <section class="empty-events">
-            <div class="empty-icon">âœ¦</div>
+            <div class="empty-icon"></div>
             <p class="eyebrow">YOUR NEXT EXPERIENCE</p>
             <h1>There are no open registrations right now.</h1>
             <p>Check back soon. New events will appear here when organizers open registration.</p>
@@ -25,22 +25,22 @@
                     @else
                         <div class="event-cover event-cover-placeholder" aria-hidden="true"><span>{{ mb_strtoupper(mb_substr($selectedEvent->title, 0, 1)) }}</span></div>
                     @endif
-                    <p class="event-date-pill">{{ $selectedEvent->starts_at->format('D, M j Â· g:i A') }}</p>
+                    <p class="event-date-pill">{{ $selectedEvent->starts_at->format('D, M j  g:i A') }}</p>
                     <h1>{{ $selectedEvent->title }}</h1>
-                    <p class="event-venue">âŒ– <span>{{ $selectedEvent->venue }}</span></p>
+                    <p class="event-venue"><span>{{ $selectedEvent->venue }}</span></p>
                     <p class="event-description">{{ $selectedEvent->description }}</p>
                 </div>
                 <div class="summary-card" aria-live="polite">
-                    <div class="summary-heading"><h2>Order summary</h2><span class="ticket-count"><b data-ticket-count>0</b> tickets Â· <b data-addon-count>0</b> add-ons</span></div>
+                    <div class="summary-heading"><h2>Order summary</h2><span class="ticket-count"><b data-ticket-count>0</b> tickets  <b data-addon-count>0</b> add-ons</span></div>
                     <p class="summary-empty" data-summary-empty>No tickets selected yet</p>
                     <div class="summary-lines">
                         <div><span>Tickets</span><strong data-ticket-subtotal>0.00 {{ $selectedEvent->currency }}</strong></div>
                         <div><span>Add-ons</span><strong data-addon-subtotal>0.00 {{ $selectedEvent->currency }}</strong></div>
-                        <div class="discount-line" hidden><span>Discount</span><strong data-discount-total>âˆ’0.00 {{ $selectedEvent->currency }}</strong></div>
+                        <div class="discount-line" hidden><span>Discount</span><strong data-discount-total>0.00 {{ $selectedEvent->currency }}</strong></div>
                     </div>
                     <div class="summary-total"><span>Total</span><strong><small>{{ $selectedEvent->currency }}</small> <span data-order-total>0.00</span></strong></div>
                 </div>
-                <p class="secure-note"><span>âœ“</span> Your details are kept private and secure.</p>
+                <p class="secure-note"> Your details are kept private and secure.</p>
             </aside>
 
             <div class="checkout-panel">
@@ -50,7 +50,7 @@
                 <label class="field-label" for="event-picker">Available events</label>
                 <select id="event-picker" class="event-picker" onchange="window.location.href='{{ route('events.index') }}?event='+this.value">
                     @foreach ($events as $event)
-                        <option value="{{ $event->id }}" @selected($event->id === $selectedEvent->id)>{{ $event->title }} Â· {{ $event->starts_at->format('M j, Y') }} Â· {{ $event->venue }}</option>
+                        <option value="{{ $event->id }}" @selected($event->id === $selectedEvent->id)>{{ $event->title }}  {{ $event->starts_at->format('M j, Y') }} {{ $event->venue }}</option>
                     @endforeach
                 </select>
 
@@ -70,7 +70,7 @@
                                     <div class="choice-copy"><h4>{{ $ticket->name }}</h4><p>{{ $ticket->description ?: 'Admission to ' . $selectedEvent->title }}</p><span class="availability">{{ $remaining ? $remaining . ' available' : 'Sold out' }}</span></div>
                                     <div class="choice-price">{{ $ticket->price == 0 ? 'Free' : $ticket->price . ' ' . $selectedEvent->currency }}</div>
                                     <div class="quantity-control" aria-label="Quantity for {{ $ticket->name }}">
-                                        <button type="button" data-quantity-change="-1" aria-label="Remove one {{ $ticket->name }}" @disabled($remaining === 0)>âˆ’</button>
+                                        <button type="button" data-quantity-change="-1" aria-label="Remove one {{ $ticket->name }}" @disabled($remaining === 0)></button>
                                         <input aria-label="{{ $ticket->name }} quantity" name="tickets[{{ $ticket->id }}]" value="{{ old('tickets.' . $ticket->id, 0) }}" min="0" max="{{ min($remaining, $ticket->maximum_per_order) }}" data-quantity data-minimum="{{ $ticket->minimum_per_order }}" data-maximum="{{ min($remaining, $ticket->maximum_per_order) }}" @disabled($remaining === 0)>
                                         <button type="button" data-quantity-change="1" aria-label="Add one {{ $ticket->name }}" @disabled($remaining === 0)>+</button>
                                     </div>
@@ -91,7 +91,7 @@
                                     <article class="choice-row {{ $remaining === 0 ? 'choice-sold-out' : '' }}" data-choice-row data-kind="addon" data-unit-cents="{{ ((int) $addOnPriceParts[0] * 100) + (int) str_pad($addOnPriceParts[1] ?? '0', 2, '0') }}" data-name="{{ $addOn->name }}">
                                         <div class="choice-copy"><h4>{{ $addOn->name }}</h4><p>{{ $addOn->description ?: 'Optional event add-on' }}</p><span class="availability">{{ $remaining ? ($addOn->capacity === null ? 'Available' : $remaining . ' available') : 'Sold out' }}</span></div>
                                         <div class="choice-price">{{ $addOn->price == 0 ? 'Free' : $addOn->price . ' ' . $selectedEvent->currency }}</div>
-                                        <div class="quantity-control" aria-label="Quantity for {{ $addOn->name }}"><button type="button" data-quantity-change="-1" @disabled($remaining === 0)>âˆ’</button><input aria-label="{{ $addOn->name }} quantity" name="add_ons[{{ $addOn->id }}]" value="{{ old('add_ons.' . $addOn->id, 0) }}" min="0" max="{{ min($remaining, 10) }}" data-quantity @disabled($remaining === 0)><button type="button" data-quantity-change="1" @disabled($remaining === 0)>+</button></div>
+                                        <div class="quantity-control" aria-label="Quantity for {{ $addOn->name }}"><button type="button" data-quantity-change="-1" @disabled($remaining === 0)></button><input aria-label="{{ $addOn->name }} quantity" name="add_ons[{{ $addOn->id }}]" value="{{ old('add_ons.' . $addOn->id, 0) }}" min="0" max="{{ min($remaining, 10) }}" data-quantity @disabled($remaining === 0)><button type="button" data-quantity-change="1" @disabled($remaining === 0)>+</button></div>
                                     </article>
                                 @endforeach
                             </div>
@@ -100,7 +100,7 @@
 
                     <section class="form-section discount-section">
                         <details>
-                            <summary><span>ï¼‹</span> Have a discount code?</summary>
+                            <summary> Have a discount code?</summary>
                             <div class="discount-entry"><input type="text" maxlength="64" placeholder="Enter code" aria-label="Discount code" value="{{ old('discount_code') }}" data-discount-input><button type="button" class="button button-quiet" data-apply-discount>Apply code</button></div>
                             <p class="discount-feedback" role="status" data-discount-feedback></p>
                         </details>
@@ -114,7 +114,7 @@
                         </div>
                         @error('event_id')<p class="form-error">{{ $message }}</p>@enderror
                         @error('discount_code')<p class="form-error">{{ $message }}</p>@enderror
-                        <button class="button button-primary register-button" type="submit">Complete registration <span aria-hidden="true">â†’</span></button>
+                        <button class="button button-primary register-button" type="submit">Complete registration</button>
                         <p class="payment-note">Paid registrations will be saved as pending payment until a payment option is connected.</p>
                     </section>
                 </form>
@@ -155,7 +155,7 @@
         elements.addonSubtotal.textContent = `${money(addonTotal)} ${currency}`;
         elements.empty.hidden = tickets > 0;
         elements.discountLine.hidden = appliedDiscount <= 0;
-        elements.discountTotal.textContent = `âˆ’${money(appliedDiscount)} ${currency}`;
+        elements.discountTotal.textContent = `${money(appliedDiscount)} ${currency}`;
         elements.total.textContent = money(Math.max(0, ticketTotal + addonTotal - appliedDiscount));
         form.dataset.selectedTickets = String(tickets);
     };
