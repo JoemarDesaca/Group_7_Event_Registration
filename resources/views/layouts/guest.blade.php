@@ -5,13 +5,23 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <title>Gather events | {{ request()->routeIs('register') ? 'Create account' : (request()->routeIs('password.request') ? 'Reset password' : 'Sign in') }}</title>
+        <title>Gather events | {{ request()->routeIs('register') ? 'Create account' : (request()->routeIs('password.confirm') ? 'Confirm password' : (request()->routeIs('password.*') ? 'Password help' : (request()->routeIs('verification.notice') ? 'Verify email' : 'Sign in'))) }}</title>
 
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=dm-sans:400,500,600,700,800|manrope:500,600,700,800&display=swap" rel="stylesheet" />
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="auth-body">
+        @php
+            $authPage = match (true) {
+                request()->routeIs('register') => ['kicker' => 'JOIN GATHER', 'title' => 'Create your account', 'description' => 'Join in and find your next favorite event.'],
+                request()->routeIs('password.request') => ['kicker' => 'ACCOUNT SUPPORT', 'title' => 'Reset your password', 'description' => 'We’ll help you get back to your account.'],
+                request()->routeIs('password.reset') => ['kicker' => 'ACCOUNT SUPPORT', 'title' => 'Choose a new password', 'description' => 'Set a new password to get back to your account.'],
+                request()->routeIs('password.confirm') => ['kicker' => 'SECURITY CHECK', 'title' => 'Confirm your password', 'description' => 'Confirm your identity to continue to this secure area.'],
+                request()->routeIs('verification.notice') => ['kicker' => 'ONE QUICK STEP', 'title' => 'Verify your email', 'description' => 'Confirm your email address to finish setting up your account.'],
+                default => ['kicker' => 'WELCOME BACK', 'title' => 'Sign in to Gather', 'description' => 'Your next great experience is just around the corner.'],
+            };
+        @endphp
         <div class="auth-page">
             <header class="auth-header">
                 <a class="auth-brand" href="{{ url('/') }}" aria-label="Gather events home">
@@ -28,9 +38,6 @@
                     <a href="{{ url('/') }}">Home</a>
                     <a href="{{ url('/#upcoming-events') }}">Explore Events</a>
                     <a href="{{ url('/#how-it-works') }}">About</a>
-                    @if (Route::has('login') && request()->routeIs('login'))
-                        <a class="auth-nav-signin" href="{{ route('login') }}">Sign In</a>
-                    @endif
                     @if (Route::has('register'))
                         <a class="auth-nav-action" href="{{ route(request()->routeIs('login') ? 'register' : 'login') }}">
                             {{ request()->routeIs('login') ? 'Get Started' : 'Sign In' }}
@@ -70,20 +77,16 @@
 
                 <section class="auth-card" aria-labelledby="auth-card-title">
                     <div class="auth-card-heading">
-                        <p class="auth-card-kicker">
-                            {{ request()->routeIs('register') ? 'START YOUR NEXT CHAPTER' : (request()->routeIs('password.request') ? 'ACCOUNT SUPPORT' : 'WELCOME BACK') }}
-                        </p>
-                        <h2 id="auth-card-title">
-                            {{ request()->routeIs('register') ? 'Create your account' : (request()->routeIs('password.request') ? 'Reset your password' : 'Sign in to Gather') }}
-                        </h2>
-                        <p>
-                            {{ request()->routeIs('register') ? 'Join in and find your next favorite event.' : (request()->routeIs('password.request') ? 'We’ll help you get back to your account.' : 'Your next great experience is just around the corner.') }}
-                        </p>
+                        <p class="auth-card-kicker">{{ $authPage['kicker'] }}</p>
+                        <h2 id="auth-card-title">{{ $authPage['title'] }}</h2>
+                        <p>{{ $authPage['description'] }}</p>
                     </div>
 
                     {{ $slot }}
 
-                    @if (request()->routeIs('login') && Route::has('register'))
+                    @if (request()->routeIs('register') && Route::has('login'))
+                        <p class="auth-card-footnote">Already have an account? <a href="{{ route('login') }}">Sign in</a></p>
+                    @elseif (request()->routeIs('login') && Route::has('register'))
                         <p class="auth-card-footnote">New to Gather? <a href="{{ route('register') }}">Create an account</a></p>
                     @endif
                 </section>

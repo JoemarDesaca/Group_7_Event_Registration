@@ -1,31 +1,19 @@
 <x-guest-layout>
-    <div class="mb-4 text-sm text-gray-600">
-        {{ __('Thanks for signing up! Before getting started, could you verify your email address by clicking on the link we just emailed to you? If you didn\'t receive the email, we will gladly send you another.') }}
-    </div>
+    <p class="auth-info">We sent a verification link to the email address you used to register. Open that message to finish setting up your account.</p>
 
     @if (session('status') == 'verification-link-sent')
-        <div class="mb-4 font-medium text-sm text-green-600">
-            {{ __('A new verification link has been sent to the email address you provided during registration.') }}
-        </div>
+        <div class="auth-session-status" role="status">A fresh verification link has been sent to your email address.</div>
     @endif
 
-    <div class="mt-4 flex items-center justify-between">
+    <div class="auth-actions-row">
         <form method="POST" action="{{ route('verification.send') }}">
             @csrf
-
-            <div>
-                <x-primary-button>
-                    {{ __('Resend Verification Email') }}
-                </x-primary-button>
-            </div>
+            <button class="auth-submit" type="submit">Resend verification email <span aria-hidden="true">→</span></button>
         </form>
 
         <form method="POST" action="{{ route('logout') }}">
             @csrf
-
-            <button type="submit" class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                {{ __('Log Out') }}
-            </button>
+            <button class="auth-quiet-button" type="submit">Log out</button>
         </form>
     </div>
 </x-guest-layout>
